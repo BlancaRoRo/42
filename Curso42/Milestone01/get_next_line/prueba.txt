@@ -1,0 +1,10 @@
+[Línea 1]Comenzamos con una línea normal.
+[Línea 2]
+[Línea 3]
+[Línea 4]Esta línea viene justo después de dos saltos de línea seguidos. ¿Los ha leído bien?
+[Línea 5]Una línea increíblemente largaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa para romper buffers pequeños.
+[Línea 6]A
+[Línea 7]B
+[Línea 8]C
+[Línea 9]Líneas de un solo carácter. Aquí suelen fallar los índices.
+[Línea 10]Y esta última línea no tiene salto de línea al final. Aquí es donde se demuestra si tu ft_read_join rescata el texto o lo devuelve como NULL.
