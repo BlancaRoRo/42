@@ -6,7 +6,7 @@
 /*   By: blromero <blromero@student.42.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/24 16:46:57 by blromero          #+#    #+#             */
-/*   Updated: 2026/06/28 17:16:29 by blromero         ###   ########.fr       */
+/*   Updated: 2026/07/07 10:37:14 by blromero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*ft_extract_line(char	*stash, int buf)
 	}
 	if (stash[index] == '\0')
 		return (NULL);
-	return (ft_substr(stash, index + 1, ft_strlen(stash)- (index - 1)));
+	return (ft_substr(stash, index + 1, ft_strlen(stash) - (index + 1)));
 }
 
 char	*ft_read_join(int fd, char *stash)
@@ -42,7 +42,7 @@ char	*ft_read_join(int fd, char *stash)
 	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!stash || !buffer)
 		return (free(stash), free(buffer), NULL);
-	while (!ft_strchr(stash, (int) '\n') && bytes_leidos != 0)
+	while (stash && !ft_strchr(stash, (int) '\n') && bytes_leidos != 0)
 	{
 		bytes_leidos = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_leidos == -1)
@@ -63,7 +63,7 @@ char	*get_next_line(int fd)
 	char		*temp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (free(stash), NULL);
+		return (free(stash), stash = NULL, NULL);
 	stash = ft_read_join(fd, stash);
 	if (!stash)
 		return (NULL);
@@ -78,24 +78,4 @@ char	*get_next_line(int fd)
 	free(stash);
 	stash = temp;
 	return (buffer);
-}
-int main(void)
-{
-    int     fd;
-    char    *line;
-
-    fd = open("only_nl.txt", O_RDONLY);
-    
-    // Llamada 1: devuelve "\n"
-    line = get_next_line(-2);
-    free(line);
-
-    close(fd);
-
-    // Llamada 3: aquí peta -> debe devolver NULL sin segfault
-    line = get_next_line(-1);
-    free(line);
-
-    close(fd);
-    return 0;
 }
