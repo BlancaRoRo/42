@@ -6,12 +6,35 @@
 /*   By: blromero <blromero@student.42.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 09:59:13 by blromero          #+#    #+#             */
-/*   Updated: 2026/07/03 12:59:00 by blromero         ###   ########.fr       */
+/*   Updated: 2026/07/16 11:36:22 by blromero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+long	ft_atoi_long(const char *nptr)
+{
+	int sign;
+	long result;
+	int	index;
 
+	index = 0;
+	sign = 1;
+	result = 0;
+	while ((nptr[index] >= 9 && nptr[index] <= 13) || nptr[index] == 32)
+		index++;
+	if (nptr[index] == '-' || nptr[index] == '+')
+	{
+		if (nptr[index] == '-')
+			sign = -1;
+		index++;
+	}
+	while(nptr[index] >= '0' && nptr[index] <= '9')
+	{
+		result = (result * 10) + (nptr[index] - '0');
+		index++;
+	}
+	return (result * sign);
+}
 int	is_valid_number(char *s)
 {
 	int	size;
@@ -37,11 +60,16 @@ int	is_valid_number(char *s)
 
 int	data_check(char **argv, int start)
 {
+	long	valor;
+
 	if (!argv)
 		return (0);
 	while (argv[start])
 	{
 		if (!is_valid_number(argv[start]))
+			return (0);
+		valor = ft_atoi_long(argv[start]);
+		if (valor > INT_MAX || valor < INT_MIN)
 			return (0);
 		start++;
 	}
@@ -54,6 +82,7 @@ t_stack	*fill_stack(char ** argv, int start)
 	t_stack *a;
 	t_stack *nuevo;
 	t_stack *tmp;
+	int valor; 
 
 	a = NULL;
 	while (argv[start])
@@ -62,6 +91,7 @@ t_stack	*fill_stack(char ** argv, int start)
 		if (!nuevo)
 			return (NULL);
 		nuevo -> value = ft_atoi(argv[start]);
+		valor = nuevo->value;
 		if (a == NULL)
 			a = nuevo;
 		else

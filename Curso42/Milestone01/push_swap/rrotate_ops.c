@@ -6,13 +6,13 @@
 /*   By: blromero <blromero@student.42.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 16:41:36 by blromero          #+#    #+#             */
-/*   Updated: 2026/07/04 16:56:29 by blromero         ###   ########.fr       */
+/*   Updated: 2026/07/19 12:37:02 by blromero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	rra(t_stack **a)
+void	rra_b(t_stack **a)
 {
 	t_stack	*primero;
 	t_stack *ultimo;
@@ -32,7 +32,7 @@ void	rra(t_stack **a)
 	final->next = NULL;
 }
 
-void	rrb(t_stack **b)
+void	rrb_b(t_stack **b)
 {
 	t_stack	*primero;
 	t_stack	*penultimo;
@@ -40,20 +40,39 @@ void	rrb(t_stack **b)
 
 	if (!*b || lst_length(*b) == 1)
 		return ;
-	primero = *a;
-	penultimo = *a;
+	primero = *b;
+	penultimo = *b;
 	while (penultimo->next->next)
 		penultimo = penultimo->next;
 	ultimo = penultimo->next;
 	ultimo->next = primero;
-	a* = ultimo;
+	*b = ultimo;
 	penultimo->next = NULL;
-
 }
 
-void	rrr(t_stack **a, t_stack **b)
+void	rra(t_stack **a, t_stats *s)
 {
-	rra(a);
-	rrb(b);
+	rra_b(a);
+	if (s->bench)
+		s->rra += 1;
+	else
+		write(1, "rra\n", 4);
+}
 
+void	rrb(t_stack **b, t_stats *s)
+{
+	rrb_b(b);
+	if (s->bench)
+		s->rrb += 1;
+	else 
+		write(1, "rrb\n", 4);
+}
+void	rrr(t_stack **a, t_stack **b, t_stats *s)
+{
+	rra_b(a);
+	rrb_b(b);
+	if (s->bench)
+		s->rrr += 1;
+	else 
+		write(1, "rrr\n", 4);
 }
