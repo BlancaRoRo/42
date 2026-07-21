@@ -6,7 +6,7 @@
 /*   By: blromero <blromero@student.42.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 16:57:00 by blromero          #+#    #+#             */
-/*   Updated: 2026/07/20 14:40:19 by blromero         ###   ########.fr       */
+/*   Updated: 2026/07/21 09:01:44 by blromero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,22 @@ void	get_min(t_stack *a, int *min)
 		if (a->value < *min)
 			*min = a->value;
 		a = a->next;
+	}
+}
+void    sort_range(int range_min, int range_max, stack *b, stack *a )
+{
+	while (a->next)
+	{
+		if (range_min <= a->value && range_max >= a->value)
+			pb(a,b);
+		else
+			ra(a);
+	}
+	simple(b);
+        while (b)
+	{
+		pa(a,b);
+		ra(a);
 	}
 }
 
