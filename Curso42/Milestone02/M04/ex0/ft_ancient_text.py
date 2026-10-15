@@ -19,10 +19,6 @@ if __name__ == "__main__":
         print(f"File '{sys.argv[1]}' closed.")
     except ValueError as e:
         print(f"{e}")
-    except FileNotFoundError:
-        print(f"Error opening file '{sys.argv[1]}'"
-        f": [Errno 2] No such file or directory: '{sys.argv[1]}'")
-    except PermissionError:
-        print(f"Error opening file '{sys.argv[1]}':"
-         f"[Errno 13] Permission denied: '{sys.argv[1]}'")
+   except OSError as e:
+        print(f"Error opening file '{sys.argv[1]}': {e}")
 
