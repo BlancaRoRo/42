@@ -1,6 +1,7 @@
 # No se sobreescribe el mensaje, funciona solo cuando no le pasan
 # valor a message
-
+# para no crear un _str_ de cada clase para que el print(e) funcione,
+# usamos el _str_ de la clase padre, Exception, y le pasamos el mensaje
 
 class GardenError(Exception):
     def __init__(self, message: str = "Unknown garden error") -> None:

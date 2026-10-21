@@ -12,12 +12,15 @@ class WaterError(GardenError):
     def __init__(self, message: str = "Unknown water error") -> None:
         super().__init__(message)
 
+# si el nombre no está capitalizado, se lanza PlantError
+# sino se imprime el nombre (ya capitalizado)
 
 def water_plant(plant_name: str) -> None:
     if plant_name != str.capitalize(plant_name):
         raise PlantError(f"Invalid plant name to water: '{plant_name}'")
     print(f"Watering {plant_name}: [OK]")
 
+# finally se ejecuta siempre, haya o no error, y aunque haya un return en el try o en el except
 
 def test_watering_system() -> None:
     test_list: list[str] = ["Tomato", "Lettuce", "Carrots"]

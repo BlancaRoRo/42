@@ -40,6 +40,7 @@ def test_error_types() -> None:
         except (ValueError, ZeroDivisionError, FileNotFoundError,
                 TypeError) as e:
             print(f"Caught an error: {e}")
+            # {type.(e).__name__}: {e} por si quieres el nombre del error
     print()
     print("All error types tested successfully!")
 
