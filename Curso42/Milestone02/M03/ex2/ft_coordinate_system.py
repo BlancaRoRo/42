@@ -12,21 +12,23 @@ def get_player_pos() -> tuple[float, ...]:
             "Enter new coordinates as floats in format 'x,y,z': ")
         # si no hay exactamente 3 valores, el desempaquetado lanza ValueError
         try:
-            x, y, z = coordenates.split(",")
-        except ValueError:
-            print("Invalid syntax")
-            continue
-        first_tuple: tuple[float, ...] = ()
-        valid: bool = True
-        for i in (x, y, z):
             try:
-                first_tuple = first_tuple + (float(i),)
+                x, y, z = coordenates.split(",")
+            except ValueError:
+                raise ValueError("Invalid syntax")
+
+            first_tuple: tuple[float, ...] = ()
+            valid: bool = True
+            try:
+                for i in (x, y, z):
+                    first_tuple = first_tuple + (float(i),)
             except ValueError as e:
                 print(f"Error on parameter '{i}': {e}")
                 valid = False
-                break
-        if valid:
-            return first_tuple
+            if valid:
+                return first_tuple
+        except ValueError as e:
+            print(f"{e}")
 
 
 # Funcionalidad: Calcula la distancia euclidiana entre dos puntos
