@@ -1,31 +1,43 @@
 import sys
 import typing
 
-# sys.stdout se usa para la salida de la terminal: en este caso el mensaje para que el usuario responda
-# sys.stdin se usa para capturar la entrada: la entrada de datos desde el teclado del usuario
-# sys.exit(1) es la salida de errores inmediata. Se usa 1 por convención de error, 0 sería todo correcto.
+# sys.stdout: salida normal, aquí el mensaje para que el usuario responda
+# sys.stdin: entrada de datos desde el teclado del usuario
+# sys.stderr: salida de errores, separada de la normal
+# flush() fuerza a que el prompt se muestre antes de esperar la respuesta
+# readline() devuelve "" en EOF (ctrl+D) y "\n" si solo se pulsa Enter
+
+
 def input_data(message: str) -> str:
     sys.stdout.write(message)
     sys.stdout.flush()
     line = sys.stdin.readline()
-    if line == " ":
-        sys.stderr.write("Empty line")
-        sys.exit(1)
-    return line.strip()
-    
+    if line == "":
+        sys.stdout.write("\n")
+    return line.rstrip("\n")
+
+
 if __name__ == "__main__":
     try:
         if len(sys.argv) != 2:
-            raise ValueError("Usage: ft_ancient_text.py <file>")
-        print("=== Cyber Archives Recovery ===")
-        print(f"Accesing file '{sys.argv[1]}'")
-        with open(sys.argv[1], "r") as f:
+            raise ValueError("Usage: ft_stream_management.py <file>")
+        print("=== Cyber Archives Recovery & Preservation ===")
+        print(f"Accessing file '{sys.argv[1]}'")
+        try:
+            f: typing.IO[str] = open(sys.argv[1], "r")
+        except OSError as e:
+            raise OSError(f"Error opening file '{sys.argv[1]}': {e}") from e
+        try:
             content = f.read()
+        except (OSError, UnicodeDecodeError) as e:
+            raise OSError(f"Error reading file '{sys.argv[1]}': {e}") from e
+        finally:
+            f.close()
         print("---\n")
         print(f"{content}\n")
         print("---")
         print(f"File '{sys.argv[1]}' closed.\n")
-        print("Trafnsform data:")
+        print("Transform data:")
         print("---\n")
         transformed = ""
         i = 0
@@ -42,16 +54,30 @@ if __name__ == "__main__":
             transformed = transformed + "#\n"
         print(f"{transformed}")
         print("---")
-        newfile = input_data("Enter new file name (or empty):") 
+        newfile = input_data("Enter new file name (or empty): ")
         if len(newfile) == 0:
             print("Not saving data.")
         else:
             print(f"Saving data to '{newfile}'")
-            new_file = open(newfile, "w")
-            new_file.write(transformed)
-            new_file.close()
-            print(f"Data saved in file '{newfile}'")
+            try:
+                new_file: typing.IO[str] = open(newfile, "w")
+                try:
+                    new_file.write(transformed)
+                finally:
+                    new_file.close()
+                print(f"Data saved in file '{newfile}'.")
+            except OSError as e:
+                print("[STDERR] Error opening file "
+                      f"'{newfile}': {e}", file=sys.stderr)
+                print("Data not saved.")
     except ValueError as e:
         print(f"[STDERR] {e}", file=sys.stderr)
+        sys.stderr.flush()
     except OSError as e:
-        print(f"Error opening file '{sys.argv[1]}': {e}", file=sys.stderr)
+        print(f"[STDERR] {e}", file=sys.stderr)
+        sys.stderr.flush()
+    except KeyboardInterrupt:
+        print("[STDERR] KeyboardInterrupt:"
+              "Process interrupted by user.", file=sys.stderr)
+        print("Not saving data.")
+        sys.stderr.flush()
