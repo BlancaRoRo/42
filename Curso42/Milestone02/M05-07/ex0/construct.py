@@ -8,8 +8,7 @@ import site
 
 def print_out() -> None:
     print("LABORATORY STATUS: You are working in the open")
-    # para que salga solo la version
-    print(f"Current python: {sys.version.split()[0]}")
+    print(f"Current Python: {sys.executable}")
     print("Virtual Environment: None detected")
     print("WARNING: You are in the global environment!")
     print("Every reagent you install here leaks into the whole system.")
@@ -22,7 +21,7 @@ def print_out() -> None:
 
 def print_in() -> None:
     print("LABORATORY STATUS: The laboratory is sealed")
-    print(f"Current Python: {sys.version.split()[0]}")
+    print(f"Current Python: {sys.executable}")
     # ultima palabra de la ruta a la carpeta, osea, el nombre del entorno
     print(f"Virtual Environment: {os.path.basename(sys.prefix)}")
     print(f"Environment Path: {sys.prefix}")
@@ -34,8 +33,6 @@ def print_in() -> None:
 if __name__ == "__main__":
     # es un entorno ?
     if sys.prefix != sys.base_prefix:
-        print("Should detect the virtual environment and show details")
         print_in()
     else:
-        print("Should detect no virtual environment and provide instructions")
         print_out()
