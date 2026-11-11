@@ -2,7 +2,8 @@ from abc import abstractmethod, ABC
 from typing import Any, Protocol
 
 
-# Cualquier clase con un método con esta cabecera, es una clase de tipo ExportPlugin
+# Cualquier clase con un método con esta cabecera,
+# es una clase de tipo ExportPlugin
 class ExportPlugin(Protocol):
     def process_output(self, data: list[tuple[int, str]]) -> None:
         ...

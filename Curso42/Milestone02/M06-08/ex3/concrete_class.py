@@ -45,8 +45,7 @@ class Shiftling(Creature, TransformCapability):
 
 class Morphagon(Creature, TransformCapability):
     def __init__(self) -> None:
-        super().__init__("Morphagon", "Normal/Dragon")
-        Creature.__init__(self, "Shiftling", "Normal")
+        Creature.__init__(self, "Morphagon", "Normal/Dragon")
         TransformCapability.__init__(self)
 
     def attack(self) -> str:

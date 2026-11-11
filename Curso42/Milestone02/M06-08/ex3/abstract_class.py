@@ -6,6 +6,9 @@ class Creature(ABC):
         self._name = name
         self._type_entity = type_entity
 
+    def get_name(self) -> str:
+        return self._name
+
     @abstractmethod
     def attack(self) -> str:
         pass
@@ -17,6 +20,7 @@ class Creature(ABC):
 class TransformCapability(ABC):
     def __init__(self) -> None:
         self._state = False
+
     @abstractmethod
     def transform(self) -> str:
         pass
