@@ -3,7 +3,6 @@ import importlib
 import importlib.metadata
 
 
-# diccinario con descripción que se muestra junto a cada reagent
 DESCRIPTIONS = {
     "pandas": "Data manipulation ready",
     "numpy": "Numerical computation ready",
@@ -38,8 +37,9 @@ def check_reagent(package: str) -> bool:
     description = DESCRIPTIONS.get(package, "ready")
     try:
         # lee la versión de los metadatos (carpeta *.dist-info)
+        # este archivo se genera cuando se instala dicho paquete
         version = importlib.metadata.version(package)
-        # importa el paquete para comprobar que funciona de verdad
+        # mira si el módulo está cargado en sys.modules
         importlib.import_module(package)
     except importlib.metadata.PackageNotFoundError:
         print(f"[MISSING] {package} - not installed")
@@ -77,9 +77,11 @@ if __name__ == "__main__":
     path = os.path.join(os.path.dirname(__file__), "requirements.txt")
     print("REAGENT STATUS: Loading reagents...")
     print("Checking dependencies:")
+    # lee los paquetes de requirements
     packages = read_requirements(path)
     missing = []
     for package in packages:
+        # comprueba que los módulos han sido instalados
         if not check_reagent(package):
             missing.append(package)
     print()
