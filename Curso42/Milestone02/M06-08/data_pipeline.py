@@ -2,17 +2,17 @@ from abc import abstractmethod, ABC
 from typing import Any, Protocol
 
 
-# Cualquier clase con un método con esta cabecera,
-# es una clase de tipo ExportPlugin
+# Any class with a method with this signature
+# is an ExportPlugin-type class
 class ExportPlugin(Protocol):
     def process_output(self, data: list[tuple[int, str]]) -> None:
         ...
 
 
-# Exporta los valores en una línea CSV separada por comas
+# Exports the values as a comma-separated CSV line
 class CSVExportPlugin:
-    # un valor con coma, comillas o salto de línea va entre comillas,
-    # y las comillas internas se duplican (regla del formato CSV)
+    # a value with a comma, quotes or newline goes inside quotes,
+    # and inner quotes are doubled (CSV format rule)
     def _escape(self, value: str) -> str:
         if ',' in value or '"' in value or '\n' in value:
             return '"' + value.replace('"', '""') + '"'
@@ -26,9 +26,9 @@ class CSVExportPlugin:
         print(",".join(values))
 
 
-# Exporta un objeto JSON con claves "item_<rank>"
+# Exports a JSON object with keys "item_<rank>"
 class JSONExportPlugin:
-    # en JSON hay que escapar la barra invertida y las comillas dobles
+    # in JSON, backslashes and double quotes must be escaped
     def _escape(self, value: str) -> str:
         return value.replace('\\', '\\\\').replace('"', '\\"')
 
@@ -41,38 +41,38 @@ class JSONExportPlugin:
 
 
 class DataProcessor(ABC):
-    # atributos de clase
+    # class attributes
     name: str = "Data Processor"
 
     def __init__(self) -> None:
-        # lista de tuplas (rank, dato en str), donde se almacenan
+        # list of tuples (rank, data as str), where they are stored
         self._storage: list[tuple[int, str]] = []
-        # contador para saber el índice
+        # counter to keep track of the index
         self._counter: int = 0
 
     @abstractmethod
     def validate(self, data: Any) -> bool:
-        # pass = vacío. Para que python sepa cuando termina el método
+        # pass = empty. So Python knows where the method ends
         pass
 
     @abstractmethod
     def ingest(self, data: Any) -> None:
         pass
 
-    # número de datos que quedan guardados (baja con output)
+    # number of items still stored (decreases with output)
     def len_storage(self) -> int:
         return len(self._storage)
 
-    # número total de datos procesados (nunca baja)
+    # total number of items processed (never decreases)
     def get_counter(self) -> int:
         return self._counter
 
-    # guarda un dato ya convertido a str con su rank
+    # stores an item already converted to str with its rank
     def _store(self, value: str) -> None:
         self._storage.append((self._counter, value))
         self._counter += 1
 
-    # saca el dato más antiguo (posición 0) y lo elimina de la lista
+    # takes the oldest item (position 0) and removes it from the list
     def output(self) -> tuple[int, str]:
         return self._storage.pop(0)
 
@@ -80,13 +80,13 @@ class DataProcessor(ABC):
 class NumericProcessor(DataProcessor):
     name: str = "Numeric Processor"
 
-    # no se pone @abstractmethod porque son clases concretas
-    # y el método se convierte en un método concreto
+    # @abstractmethod is not used because these are concrete classes
+    # and the method becomes a concrete method
     def _is_number(self, item: Any) -> bool:
-        # bool hereda de int, se comprueba
+        # bool inherits from int, so it is checked
         return isinstance(item, (int, float)) and not isinstance(item, bool)
 
-    # acepta un número suelto o una lista de números (mezclados vale)
+    # accepts a single number or a list of numbers (mixed is fine)
     def validate(self, data: Any) -> bool:
         if self._is_number(data):
             return True
@@ -97,12 +97,12 @@ class NumericProcessor(DataProcessor):
             return True
         return False
 
-    # valida, convierte cada número a str y lo guarda por separado
+    # validates, converts each number to str and stores it separately
     def ingest(self, data: int | float | list[int | float]) -> None:
         if not self.validate(data):
             raise ValueError("Improper numeric data")
         if not isinstance(data, list):
-            data = [data]  # Convertir el dato en una lista para iterar
+            data = [data]  # Convert the data into a list to iterate
         for item in data:
             self._store(str(item))
 
@@ -135,11 +135,11 @@ class TextProcessor(DataProcessor):
 class LogProcessor(DataProcessor):
     name: str = "Log Processor"
 
-    # Funcionalidad: comprueba que sea un string
+    # Functionality: checks that it is a string
     def _is_str(self, item: Any) -> bool:
         return isinstance(item, (str))
 
-    # Funcionalidad: comprueba que sea una lista de diccionarios
+    # Functionality: checks that it is a list of dictionaries
     def _is_log(self, data: Any) -> bool:
         if isinstance(data, list):
             for i in data:
@@ -148,9 +148,9 @@ class LogProcessor(DataProcessor):
             return True
         return False
 
-    # Funcionalidad: acepta un diccionario que convierte a lista
-    # para poder validarlo. Comprueba que las claves/valor del
-    # diccionario sean string o contengan 'log' en la clave
+    # Functionality: accepts a dictionary, which it converts to a list
+    # so it can be validated. Checks that the keys/values of the
+    # dictionary are strings or contain 'log' in the key
     def validate(self, data: Any) -> bool:
         if isinstance(data, dict):
             data = [data]
@@ -163,9 +163,9 @@ class LogProcessor(DataProcessor):
             return True
         return False
 
-    # Funcionalidad: valida el diccionario o lista de diccionarios.
-    # Convierte el diccionario a lista para iterar y guardarlo
-    # en el storage
+    # Functionality: validates the dictionary or list of dictionaries.
+    # Converts the dictionary to a list to iterate and store it
+    # in the storage
     def ingest(self, data: dict[str, str] | list[dict[str, str]]) -> None:
         if not self.validate(data):
             raise ValueError("Improper log data")
@@ -185,8 +185,8 @@ class DataStream:
                 return
         self._dataProcessor.append(proc)
 
-    # Polimorfismo: llama a validate de la clase que estas usando.
-    # Elige a qué procesador ir y si ninguno lo gestiona devuelve el print
+    # Polymorphism: calls validate of the class you are using.
+    # Chooses which processor to use; if none handles it, prints a message
     def process_stream(self, stream: list[Any]) -> None:
         flag: int = 0
         for item in stream:
@@ -200,8 +200,8 @@ class DataStream:
                 print("DataStream error - "
                       f"Can't process element in stream: {item}")
 
-    # Funcionalidad: Te imprime el número total de items guardados
-    # (counter) y los que actualmente estan guardados (len de storage)
+    # Functionality: prints the total number of items stored
+    # (counter) and those currently stored (len of storage)
     def print_processors_stats(self) -> None:
         print("== DataStream statistics ==")
         if len(self._dataProcessor) == 0:
@@ -212,11 +212,11 @@ class DataStream:
                   f"total {processor.get_counter()} items processed, "
                   f"remaining {processor.len_storage()} on processor")
 
-    # Consume hasta nb datos de cada procesador y se los pasa al plugin.
+    # Consumes up to nb items from each processor and passes them to plugin.
     def output_pipeline(self, nb: int, plugin: ExportPlugin) -> None:
         for processor in self._dataProcessor:
             list_output: list[tuple[int, str]] = []
-            # si quedan menos de nb, se sacan solo los que hay
+            # if fewer than nb remain, only the available ones are taken
             for _ in range(min(nb, processor.len_storage())):
                 list_output.append(processor.output())
             if list_output:

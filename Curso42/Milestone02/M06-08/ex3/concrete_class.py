@@ -2,15 +2,15 @@ from .abstract_class import Creature, CreatureFactory, TransformCapability
 
 
 class Flameling(Creature):
-    # si no asigno las variables name y type a este
-    # constructor, lo hace la clase padre
+    # if I don't assign the name and type variables in this
+    # constructor, the parent class does it
     def __init__(self) -> None:
         super().__init__("Flameling", "Fire")
 
     def attack(self) -> str:
         return "Flameling uses Ember!"
-    # describe no es necesario, pues ya lo implementa
-    # la clase padre
+    # describe is not needed, since it is already implemented
+    # by the parent class
 
 
 class Pyrodon(Creature):
@@ -21,11 +21,11 @@ class Pyrodon(Creature):
         return "Pyrodon uses Flamethrower!"
 
 
-# Creature y TransformCapability clases
+# Creature and TransformCapability classes
 class Shiftling(Creature, TransformCapability):
     def __init__(self) -> None:
-        # para que me pille el state de clase, tengo que heredar el constructor
-        # se heredan los métodos no los atributos del constructor.
+        # to get the class state, I have to inherit the constructor
+        # methods are inherited, not the constructor's attributes.
         Creature.__init__(self, "Shiftling", "Normal")
         TransformCapability.__init__(self)
 

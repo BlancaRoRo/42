@@ -4,38 +4,38 @@ from typing import Any
 
 class DataProcessor(ABC):
     def __init__(self) -> None:
-        # lista de tuplas (rank, dato en str), donde se almacenan
+        # list of tuples (rank, data as str), where they are stored
         self._storage: list[tuple[int, str]] = []
-        # rank del siguiente dato que se guarde; nunca baja
+        # rank of the next item to be stored; never decreases
         self._counter: int = 0
 
     @abstractmethod
     def validate(self, data: Any) -> bool:
-        # pass = vacío. Para que python sepa cuando termina el método
+        # pass = empty. So Python knows where the method ends
         pass
 
     @abstractmethod
     def ingest(self, data: Any) -> None:
         pass
 
-    # guarda un dato ya convertido a str con su rank
+    # stores an item already converted to str with its rank
     def _store(self, value: str) -> None:
         self._storage.append((self._counter, value))
         self._counter += 1
 
-    # saca el dato más antiguo (posición 0) y lo elimina de la lista
+    # takes the oldest item (position 0) and removes it from the list
     def output(self) -> tuple[int, str]:
         return self._storage.pop(0)
 
 
 class NumericProcessor(DataProcessor):
-    # no se pone @abstractmethod porque son clases concretas
-    # y el método se convierte en un método concreto
+    # @abstractmethod is not used because these are concrete classes
+    # and the method becomes a concrete method
     def _is_number(self, item: Any) -> bool:
-        # bool hereda de int, se comprueba
+        # bool inherits from int, so it is checked
         return isinstance(item, (int, float)) and not isinstance(item, bool)
 
-    # acepta un número suelto o una lista de números (mezclados vale)
+    # accepts a single number or a list of numbers (mixed is fine)
     def validate(self, data: Any) -> bool:
         if self._is_number(data):
             return True
@@ -46,12 +46,12 @@ class NumericProcessor(DataProcessor):
             return True
         return False
 
-    # valida, convierte cada número a str y lo guarda por separado
+    # validates, converts each number to str and stores it separately
     def ingest(self, data: int | float | list[int | float]) -> None:
         if not self.validate(data):
             raise ValueError("Improper numeric data")
         if not isinstance(data, list):
-            data = [data]  # Convertir el dato en una lista para iterar
+            data = [data]  # Convert the data into a list to iterate
         for item in data:
             self._store(str(item))
 
@@ -80,11 +80,11 @@ class TextProcessor(DataProcessor):
 
 
 class LogProcessor(DataProcessor):
-    # Funcionalidad: comprueba que sea un string
+    # Functionality: checks that it is a string
     def _is_str(self, item: Any) -> bool:
         return isinstance(item, (str))
 
-    # Funcionalidad: comprueba que sea una lista de diccionarios
+    # Functionality: checks that it is a list of dictionaries
     def _is_log(self, data: Any) -> bool:
         if isinstance(data, list):
             for i in data:
@@ -93,9 +93,9 @@ class LogProcessor(DataProcessor):
             return True
         return False
 
-    # Funcionalidad: acepta un diccionario que convierte a lista
-    # para poder validarlo. Comprueba que las claves/valor del
-    # diccionario sean string o contengan 'log' en la clave
+    # Functionality: accepts a dictionary, which it converts to a list
+    # so it can be validated. Checks that the keys/values of the
+    # dictionary are strings or contain 'log' in the key
     def validate(self, data: Any) -> bool:
         if isinstance(data, dict):
             data = [data]
@@ -108,9 +108,9 @@ class LogProcessor(DataProcessor):
             return True
         return False
 
-    # Funcionalidad: valida el diccionario o lista de diccionarios.
-    # Convierte el diccionario a lista para iterar y guardarlo
-    # en el storage
+    # Functionality: validates the dictionary or list of dictionaries.
+    # Converts the dictionary to a list to iterate and store it
+    # in the storage
     def ingest(self, data: dict[str, str] | list[dict[str, str]]) -> None:
         if not self.validate(data):
             raise ValueError("Improper log data")
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     try:
         print("Test invalid ingestion of string 'foo' "
               "without prior validation:")
-        numeric_processor.ingest("foo")
+        numeric_processor.ingest("foo")  # type: ignore[arg-type]
     except ValueError as e:
         print(f"Got exception: {e}")
     print("Processing data: [1, 2, 3, 4, 5]")
